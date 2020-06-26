@@ -1,0 +1,50 @@
+# TODO
+# - 1 deployment, que tenga 1 pod, namespace distinto
+# - en el pod, viene 1 icecast
+# - aplicacion ruby que envia plantilla kubernetes usando API
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: testing123
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-music-stack
+  namespace: testing123
+  labels:
+    app: icecast
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: icecast
+  template:
+    metadata:
+      labels:
+        app: icecast
+    spec:
+      containers:
+      - name: icecast
+        image: mars64/icecast:latest
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+        env:
+        - name: ICECAST_ADMIN_USER
+          value: admin
+        - name: ICECAST_ADMIN_PASS
+          value: changeme
+        - name: ICECAST_HOSTNAME
+          value: radio.eljojo.net
+        - name: ICECAST_LOCATION
+          value: Ottawa, Canada
+        - name: ICECAST_PORT
+          value: "8000"
+        - name: ICECAST_RELAY_PASS
+          value: changeme
+        - name: ICECAST_STREAM_PASS
+          value: changeme
