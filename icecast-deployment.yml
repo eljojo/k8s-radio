@@ -2,11 +2,6 @@
 # - 1 deployment, que tenga 1 pod, namespace distinto
 # - en el pod, viene 1 icecast
 # - aplicacion ruby que envia plantilla kubernetes usando API
-apiVersion: v1
-kind: Namespace
-metadata:
-    name: testing123
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
