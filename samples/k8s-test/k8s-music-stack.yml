@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-music-stack
+  labels:
+    app: icecast
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: icecast
+  template:
+    metadata:
+      labels:
+        app: icecast
+    spec:
+      containers:
+      - name: icecast
+        image: mars64/icecast:latest
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+        env:
+        - name: ICECAST_ADMIN_USER
+          value: jojo
+        - name: ICECAST_ADMIN_PASS
+          value: clave
+        - name: ICECAST_HOSTNAME
+          value: radio.eljojo.net
+        - name: ICECAST_LOCATION
+          value: Ottawa, Canada
+        - name: ICECAST_PORT
+          value: "8000"
+        - name: ICECAST_RELAY_PASS
+          value: clave
+        - name: ICECAST_STREAM_PASS
+          value: clave
+      - name: nginx
+        image: eljojo/nginx-rtmp-docker:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: UPSTREAM_HOST
+          value: localhost:8000
+        - name: STREAM_NAME
+          value: jojo
